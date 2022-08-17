@@ -1,3 +1,4 @@
+from cProfile import label
 from curses import window
 import sys
 from PyQt5.QtWidgets import *
@@ -22,7 +23,8 @@ def main():
     label_Card = QLabel(window)
     label_Card.setText("Card Number: " + cardNo)
     label_Card.setFont(QFont("Roboto", 14))
-    label_Card.move(20,60)
+    #label_Card.move(20,60)
+    label_Card.setAlignment()
 
     window.show()
     app.exec_()
