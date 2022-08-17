@@ -16,7 +16,7 @@ def main():
     #Main App and Window
     app = QApplication([])
     window = QWidget()
-    window.setGeometry(200,200,900,700)
+    window.setGeometry(200,200,850,500)
     window.setWindowTitle("Transit App")
 
     #Hello, <name>
@@ -67,6 +67,22 @@ def main():
     label_Rides.setText("Last Recharge")
     label_Rides.setFont(QFont("Roboto", 12))
     label_Rides.move(630, 260)
+
+    #Edit Account Button
+    button_editAc = QPushButton("Edit Account", window)
+    button_editAc.setFont(QFont("Roboto", 10))
+    button_editAc.setGeometry(40, 400, 200,50)
+
+    #ERecharge Button
+    button_Recharge = QPushButton("Recharge", window)
+    button_Recharge.setFont(QFont("Roboto", 10))
+    button_Recharge.setGeometry(310, 400, 200,50)
+
+    #NFC Button
+    button_NFC = QPushButton("NFC", window)
+    button_NFC.setFont(QFont("Roboto", 10))
+    button_NFC.setGeometry(590, 400, 200,50)
+
 
     window.show()
     app.exec_()
