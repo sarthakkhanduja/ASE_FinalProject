@@ -18,6 +18,12 @@ class DbInitialser:
         self.mycursor.execute("CREATE TABLE IF NOT EXISTS RidesTable (LastRechargeID PRIMARY KEY INT, amount Double, LastRechargeDate Date);")
         self.mydb.commit()
     
+    def validateLogin(self, cardnumber, pwd):
+        self.mycursor.execute(f"Select * from CustomerTable where CardNumber = {cardnumber} and password = {pwd}")
+        result = self.mycursor.fetchall()
+        print(result)
+
+    
 
     
 
