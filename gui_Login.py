@@ -4,83 +4,84 @@ from datetime import date
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QFont
+from database_creation import DbInitialser
 
 class LoginWindow():
     def __init__(self):
         self.Title = "Login Window"
+        self.db = DbInitialser()
+        self.db.open_connection()
+        self.db.create_database()
+        self.app = QApplication([])
+        self.window = QWidget()
         self.LoginWindow_GUI()
+        self.window.show()
+        self.app.exec_()
     
     def LoginWindow_GUI(self):
-        app = QApplication([])
-        window = QWidget()
-        window.setGeometry(200,200,850,500)
-        window.setWindowTitle("Login")
+        self.window.setGeometry(200,200,450,350)
+        self.window.setWindowTitle("Login")
 
-        #Hello, <name>
-        label_Name = QLabel(window)
-        label_Name.setText("Hello, " + "Sri")
+        label_Name = QLabel(self.window)
+        label_Name.setText(" Welcome to transit windsor ")
         label_Name.setFont(QFont("Roboto", 22))
         #grid.addWidget(label_Name,0,0)
         label_Name.move(20,10)
 
         #Card number: <---- ---- ---- ---->
-        label_Card = QLabel(window)
-        label_Card.setText("Card Number: " + "44564546546546546")
-        label_Card.setFont(QFont("Roboto", 13))
-        label_Card.move(20,70)
+        self.label_Card = QLabel(self.window)
+        self.label_Card.setText("Card Number: ")
+        self.label_Card.setFont(QFont("Roboto", 13))
+        self.label_Card.move(20,80)
 
-        #Number of Rides
-        label_RidesNo = QLabel(window)
-        label_RidesNo.setText("9")
-        label_RidesNo.setFont(QFont("Roboto", 34))
-        label_RidesNo.move(120, 180)
+        #Card Number text box
+        self.cardTextBox = QLineEdit(self.window)
+        self.cardTextBox.move(150, 70)
+        self.cardTextBox.resize(280,40)
 
-        #Rides Label
-        label_Rides = QLabel(window)
-        label_Rides.setText("Number of Rides Left")
-        label_Rides.setFont(QFont("Roboto", 12))
-        label_Rides.move(40, 260)
+        #Password : <---- ---- ---- ---->
+        self.label_Password = QLabel(self.window)
+        self.label_Password.setText("Password : ")
+        self.label_Password.setFont(QFont("Roboto", 13))
+        self.label_Password.move(20,150)
 
-        #Last Ride Date
-        label_RidesNo = QLabel(window)
-        label_RidesNo.setText("12/12/12")
-        label_RidesNo.setFont(QFont("Roboto", 24))
-        label_RidesNo.move(310, 190)
+        #Password text box
+        self.passwordTextBox = QLineEdit(self.window)
+        self.passwordTextBox.setEchoMode(QLineEdit.Password)
+        self.passwordTextBox.move(150, 140)
+        self.passwordTextBox.resize(280,40)
 
-        #Last Ride Label
-        label_Rides = QLabel(window)
-        label_Rides.setText("Last Ride")
-        label_Rides.setFont(QFont("Roboto", 12))
-        label_Rides.move(370, 260)
+        #Login Button
+        button_login = QPushButton("Login", self.window)
+        button_login.setFont(QFont("Roboto", 10))
+        button_login.setGeometry(150, 200, 100,50)
+        button_login.clicked.connect(self.onLoginClick)
 
-        #Last Recharge Date
-        label_RidesNo = QLabel(window)
-        label_RidesNo.setText("9")
-        label_RidesNo.setFont(QFont("Roboto", 24))
-        label_RidesNo.move(590, 190)
+        #Cancel Button
+        button_cancel = QPushButton("Cancel", self.window)
+        button_cancel.setFont(QFont("Roboto", 10))
+        button_cancel.setGeometry(310, 200, 100,50)
+        button_cancel.clicked.connect(self.onCancelClick)
 
-        #Last Recharge Label
-        label_Rides = QLabel(window)
-        label_Rides.setText("Last Recharge")
-        label_Rides.setFont(QFont("Roboto", 12))
-        label_Rides.move(630, 260)
+        #Signup Button
+        signup_button = QPushButton("New User?", self.window)
+        signup_button.setFont(QFont("Roboto", 10))
+        signup_button.setGeometry(175, 275, 200,50)
+        signup_button.clicked.connect(self.onSignupClick)
 
-        #Edit Account Button
-        button_editAc = QPushButton("Edit Account", window)
-        button_editAc.setFont(QFont("Roboto", 10))
-        button_editAc.setGeometry(40, 400, 200,50)
-
-        #ERecharge Button
-        button_Recharge = QPushButton("Recharge", window)
-        button_Recharge.setFont(QFont("Roboto", 10))
-        button_Recharge.setGeometry(310, 400, 200,50)
-
-        #NFC Button
-        button_NFC = QPushButton("NFC", window)
-        button_NFC.setFont(QFont("Roboto", 10))
-        button_NFC.setGeometry(590, 400, 200,50)
-
-        window.show()
-        app.exec_()
+  
+    def onSignupClick(self):
+        print("test")
+    
+    def onCancelClick(self):
+        print("Called")
+        self.app.close()
+        
+    def onLoginClick(self):
+        card_num = self.cardTextBox.text()
+        pwd = self.passwordTextBox.text()
+        self.db.validateLogin(card_num, pwd)
+        print(F"card num = {card_num}\npwd = {pwd}")
+        
 
 myWindow = LoginWindow()
