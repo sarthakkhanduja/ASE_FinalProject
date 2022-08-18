@@ -8,23 +8,24 @@ from database_creation import DbInitialser
 
 class LoginWindow():
     def __init__(self):
-        self.Title = "Login Window"
+        self.Title = "Sign Up"
+        # self.cardNo = "4544 5455 7877 8988"
         self.db = DbInitialser()
         # self.db.open_connection()
         # self.db.create_database()
         self.app = QApplication([])
         self.window = QWidget()
-        self.LoginWindow_GUI()
+        self.SignUp_GUI()
         self.window.show()
         self.app.exec_()
     
-    def LoginWindow_GUI(self):
-        self.window.setGeometry(200,200,450,350)
-        self.window.setWindowTitle("Login")
+    def SignUp_GUI(self):
+        self.window.setGeometry(200,200,550,550)
+        self.window.setWindowTitle(self.Title)
 
         label_Name = QLabel(self.window)
-        label_Name.setText(" Welcome to transit windsor ")
-        label_Name.setFont(QFont("Roboto", 22))
+        label_Name.setText("Hello, please fill the following details: ")
+        label_Name.setFont(QFont("Roboto", 18))
         #grid.addWidget(label_Name,0,0)
         label_Name.move(20,10)
 
@@ -36,7 +37,7 @@ class LoginWindow():
 
         #Card Number text box
         self.cardTextBox = QLineEdit(self.window)
-        self.cardTextBox.move(150, 70)
+        self.cardTextBox.move(170, 70)
         self.cardTextBox.resize(280,40)
 
         #Password : <---- ---- ---- ---->
@@ -48,27 +49,53 @@ class LoginWindow():
         #Password text box
         self.passwordTextBox = QLineEdit(self.window)
         self.passwordTextBox.setEchoMode(QLineEdit.Password)
-        self.passwordTextBox.move(150, 140)
+        self.passwordTextBox.move(170, 140)
         self.passwordTextBox.resize(280,40)
 
-        #Login Button
-        button_login = QPushButton("Login", self.window)
+        #First Name
+        self.label_fName = QLabel(self.window)
+        self.label_fName.setText("First Name: ")
+        self.label_fName.setFont(QFont("Roboto", 13))
+        self.label_fName.move(20,220)
+
+        #First Name text box
+        self.fNameTextBox = QLineEdit(self.window)
+        self.fNameTextBox.move(170, 210)
+        self.fNameTextBox.resize(280,40)
+
+        #Last Name
+        self.label_lName = QLabel(self.window)
+        self.label_lName.setText("Last Name: ")
+        self.label_lName.setFont(QFont("Roboto", 13))
+        self.label_lName.move(20,290)
+
+        #Last Name text box
+        self.lNameTextBox = QLineEdit(self.window)
+        self.lNameTextBox.move(170, 280)
+        self.lNameTextBox.resize(280,40)
+
+        #Phone Number
+        self.label_phNo = QLabel(self.window)
+        self.label_phNo.setText("Phone No.: ")
+        self.label_phNo.setFont(QFont("Roboto", 13))
+        self.label_phNo.move(20,360)
+
+        #Phone Number text box
+        self.phNoTextBox = QLineEdit(self.window)
+        self.phNoTextBox.move(170, 350)
+        self.phNoTextBox.resize(280,40)
+
+        #Submit Button
+        button_login = QPushButton("Submit", self.window)
         button_login.setFont(QFont("Roboto", 10))
-        button_login.setGeometry(150, 200, 100,50)
+        button_login.setGeometry(150, 450, 100,50)
         button_login.clicked.connect(self.onLoginClick)
 
         #Cancel Button
         button_cancel = QPushButton("Cancel", self.window)
         button_cancel.setFont(QFont("Roboto", 10))
-        button_cancel.setGeometry(310, 200, 100,50)
+        button_cancel.setGeometry(310, 450, 100,50)
         button_cancel.clicked.connect(self.onCancelClick)
-
-        #Signup Button
-        signup_button = QPushButton("New User?", self.window)
-        signup_button.setFont(QFont("Roboto", 10))
-        signup_button.setGeometry(175, 275, 200,50)
-        signup_button.clicked.connect(self.onSignupClick)
-
   
     def onSignupClick(self):
         print("test")
