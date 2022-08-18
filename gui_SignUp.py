@@ -6,7 +6,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QFont
 from database_creation import DbInitialser
 
-class LoginWindow():
+class RechargeWindow():
     def __init__(self):
         self.Title = "Sign Up"
         # self.cardNo = "4544 5455 7877 8988"
@@ -111,4 +111,4 @@ class LoginWindow():
         print(F"card num = {card_num}\npwd = {pwd}")
         
 
-myWindow = LoginWindow()
+myWindow = RechargeWindow()
