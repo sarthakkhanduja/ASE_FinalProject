@@ -4,88 +4,125 @@ from datetime import date
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QFont
+from database_creation import DbInitialser
+from user import User
+from gui_Recharge import RechargeWindow
+import random
 
-def main():
-    #Global variables
-    fName = "Sarthak Khanduja"
-    cardNo = "4456 0211 6458 9899"
-    noOfRides = "9"
-    lastRide = str(date(2022, 8, 10))
-    lastRecharge = str(date(2022, 7, 19))
+class DashBoard:
 
-    #Main App and Window
-    app = QApplication([])
-    window = QWidget()
-    window.setGeometry(200,200,850,500)
-    window.setWindowTitle("Transit App")
+    def __init__(self, user:User) -> None:
+        self.user = user
+        self.db = DbInitialser()
+        self.window = QWidget()
+        self.window.setGeometry(200,200,850,500)
+        self.window.setWindowTitle("Transit App")
+        self.loadWindow()
+    
+    def getWindow(self):
+        return self.window
+    
+    def loadWindow(self):
+        self.window = QWidget()
+        #Hello, <name>
+        self.label_Name = QLabel(self.window)
+        self.label_Name.setText("Hello, " + self.user.firstName)
+        self.label_Name.setFont(QFont("Roboto", 22))
+        #grid.addWidget(label_Name,0,0)
+        self.label_Name.move(20,10)
 
-    #Hello, <name>
-    label_Name = QLabel(window)
-    label_Name.setText("Hello, " + fName)
-    label_Name.setFont(QFont("Roboto", 22))
-    #grid.addWidget(label_Name,0,0)
-    label_Name.move(20,10)
+        #Card number: <---- ---- ---- ---->
+        self.label_Card = QLabel(self.window)
+        self.label_Card.setText("Card Number: " + self.user.cardNumber)
+        self.label_Card.setFont(QFont("Roboto", 13))
+        self.label_Card.move(20,70)
 
-    #Card number: <---- ---- ---- ---->
-    label_Card = QLabel(window)
-    label_Card.setText("Card Number: " + cardNo)
-    label_Card.setFont(QFont("Roboto", 13))
-    label_Card.move(20,70)
+        #Number of Rides
+        self.label_RidesNo = QLabel(self.window)
+        self.label_RidesNo.setText(str(self.user.ridesLeft))
+        self.label_RidesNo.setFont(QFont("Roboto", 34))
+        self.label_RidesNo.move(120, 180)
 
-    #Number of Rides
-    label_RidesNo = QLabel(window)
-    label_RidesNo.setText(noOfRides)
-    label_RidesNo.setFont(QFont("Roboto", 34))
-    label_RidesNo.move(120, 180)
+        #Rides Label
+        self.label_Rides = QLabel(self.window)
+        self.label_Rides.setText("Number of Rides Left")
+        self.label_Rides.setFont(QFont("Roboto", 12))
+        self.label_Rides.move(40, 260)
 
-    #Rides Label
-    label_Rides = QLabel(window)
-    label_Rides.setText("Number of Rides Left")
-    label_Rides.setFont(QFont("Roboto", 12))
-    label_Rides.move(40, 260)
+        #Last Ride Date
+        self.label_RidesNo = QLabel(self.window)
+        self.label_RidesNo.setText(str(self.user.lasRideDate))
+        self.label_RidesNo.setFont(QFont("Roboto", 24))
+        self.label_RidesNo.move(310, 190)
 
-    #Last Ride Date
-    label_RidesNo = QLabel(window)
-    label_RidesNo.setText(lastRide)
-    label_RidesNo.setFont(QFont("Roboto", 24))
-    label_RidesNo.move(310, 190)
+        #Last Ride Label
+        label_Rides = QLabel(self.window)
+        label_Rides.setText("Last Ride")
+        label_Rides.setFont(QFont("Roboto", 12))
+        label_Rides.move(370, 260)
 
-    #Last Ride Label
-    label_Rides = QLabel(window)
-    label_Rides.setText("Last Ride")
-    label_Rides.setFont(QFont("Roboto", 12))
-    label_Rides.move(370, 260)
+        #Last Recharge Date
+        self.label_RidesNo = QLabel(self.window)
+        self.label_RidesNo.setText(str(self.user.lastRechargeDate))
+        self.label_RidesNo.setFont(QFont("Roboto", 24))
+        self.label_RidesNo.move(590, 190)
 
-    #Last Recharge Date
-    label_RidesNo = QLabel(window)
-    label_RidesNo.setText(lastRide)
-    label_RidesNo.setFont(QFont("Roboto", 24))
-    label_RidesNo.move(590, 190)
+        #Last Recharge Label
+        self.label_Rides = QLabel(self.window)
+        self.label_Rides.setText("Last Recharge")
+        self.label_Rides.setFont(QFont("Roboto", 12))
+        self.label_Rides.move(630, 260)
 
-    #Last Recharge Label
-    label_Rides = QLabel(window)
-    label_Rides.setText("Last Recharge")
-    label_Rides.setFont(QFont("Roboto", 12))
-    label_Rides.move(630, 260)
+        #Edit Account Button
+        self.button_editAc = QPushButton("Edit Account", self.window)
+        self.button_editAc.setFont(QFont("Roboto", 10))
+        self.button_editAc.setGeometry(40, 400, 200,50)
 
-    #Edit Account Button
-    button_editAc = QPushButton("Edit Account", window)
-    button_editAc.setFont(QFont("Roboto", 10))
-    button_editAc.setGeometry(40, 400, 200,50)
+        #ERecharge Button
+        self.button_Recharge = QPushButton("Recharge", self.window)
+        self.button_Recharge.setFont(QFont("Roboto", 10))
+        self.button_Recharge.setGeometry(310, 400, 200,50)
+        self.button_Recharge.clicked.connect(self.onRechargeClick)
 
-    #ERecharge Button
-    button_Recharge = QPushButton("Recharge", window)
-    button_Recharge.setFont(QFont("Roboto", 10))
-    button_Recharge.setGeometry(310, 400, 200,50)
+        #NFC Button
+        self.button_NFC = QPushButton("NFC", self.window)
+        self.button_NFC.setFont(QFont("Roboto", 10))
+        self.button_NFC.setGeometry(590, 400, 200,50)
+        self.button_NFC.clicked.connect(self.onNFCClick)
+    
+    def onRechargeClick(self):
+        print("called")
+        self.newwindow = RechargeWindow(self.user, self)
+        self.newwindow.button_login.clicked.connect(self.onSubmitClick)
+        self.newwindow.window.show()
+    
+    def onSubmitClick(self):
+        lastRechargeID = random.randint(0,100000)
+        lastRechargeDate = date.today()
+        self.user.ridesLeft = 0
+        rides = int(self.user.ridesLeft) + int(self.newwindow.phNoTextBox.text())
+        amount = self.newwindow.amount
+        card_num = self.newwindow.creditCardTextBox.text()
+        values = f"'{lastRechargeID}', '{amount}', '{lastRechargeDate}', '{card_num}'"
+        self.db.updatePayment(values)
+        self.user.ridesLeft = str(rides)
+        self.user.lastRechargeDate = lastRechargeDate
+        self.window.hide()
+        self.loadWindow()
+        self.window.update()
+        self.window.show()
+        # self.db.updateRides(self.user.cardNumber,rides,lastRechargeID)
+        self.newwindow.window.close()
 
-    #NFC Button
-    button_NFC = QPushButton("NFC", window)
-    button_NFC.setFont(QFont("Roboto", 10))
-    button_NFC.setGeometry(590, 400, 200,50)
+    def onNFCClick(self):
+        msg = QMessageBox()
+        msg.setText("Successfully validated")
+        msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        retval = msg.exec_()
+        self.user.ridesLeft = str(int(self.user.ridesLeft) - 1)
+        self.user.lasRideDate = date.today()
+        self.loadWindow()
+        self.window.update()
+        self.window.show()
 
-
-    window.show()
-    app.exec_()
-
-if __name__ == '__main__':
-    main()
+    

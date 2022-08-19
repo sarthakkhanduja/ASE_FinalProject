@@ -1,10 +1,14 @@
 from cProfile import label
 from curses import window
+from curses.ascii import US
 from datetime import date
 import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QFont
 from database_creation import DbInitialser
+from gui import DashBoard
+from user import User
+from gui_SignUp import SignUp
 
 class LoginWindow():
     def __init__(self):
@@ -71,17 +75,28 @@ class LoginWindow():
 
   
     def onSignupClick(self):
-        print("test")
+        self.signUpWindow = SignUp()
+        self.signUpWindow.window.show()
     
     def onCancelClick(self):
-        print("Called")
         self.app.close()
         
     def onLoginClick(self):
         card_num = self.cardTextBox.text()
         pwd = self.passwordTextBox.text()
-        self.db.validateLogin(card_num, pwd)
-        print(F"card num = {card_num}\npwd = {pwd}")
-        
+        result = self.db.validateLogin(card_num, pwd)
+        if result == False:
+            msg = QMessageBox()
+            msg.setText("Incorrect card number or password")
+            msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+            retval = msg.exec_()
+        else:
+            print(result)
+            (firstName, lastName, cardNumber) = result[0]
+            user = User(firstName, lastName, cardNumber)
+            self.window.close()
+            self.dashboard = DashBoard(user)
+            self.dashboard.getWindow().show()
+
 
 myWindow = LoginWindow()
