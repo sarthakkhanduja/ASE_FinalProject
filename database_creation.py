@@ -13,13 +13,14 @@ class DbInitialser:
             )
         self.mycursor = self.mydb.cursor()
         self.mycursor.execute("USE dbtransitwindsor;")
+        self.create_database()
     
     def create_database(self):
         self.mycursor.execute("CREATE DATABASE IF NOT EXISTS dbtransitwindsor;")
         self.mycursor.execute("USE dbtransitwindsor;")
         self.mycursor.execute("CREATE TABLE IF NOT EXISTS CustomerTable (FirstName varchar(50), LastName varchar(50), CardNumber varchar(16) PRIMARY KEY, phoneNumber varchar(10), isStudent INT, password varchar(50));")
-        self.mycursor.execute("CREATE TABLE IF NOT EXISTS RidesTable (CardNumber varchar(16) PRIMARY KEY, Rides INT, LastRechargeID INT, LastRide Date);")
-        self.mycursor.execute("CREATE TABLE IF NOT EXISTS RechargeTable (LastRechargeID INT PRIMARY KEY, amount Double, LastRechargeDate Date);")
+        self.mycursor.execute("CREATE TABLE IF NOT EXISTS RidesTable (CardNumber varchar(16), Rides INT, LastRechargeID int, LastRide Date);")
+        self.mycursor.execute("CREATE TABLE IF NOT EXISTS RechargeTable (LastRechargeID int NOT NULL AUTO_INCREMENT PRIMARY KEY, amount Double, LastRechargeDate Date, CreditCardNum varchar(16));")
         self.mydb.commit()
     
     def validateLogin(self, cardnumber, pwd):
@@ -31,7 +32,7 @@ class DbInitialser:
             return False
     
     def getRidesAndLastRideFor(self, cardNumber) -> int:
-        self.mycursor.execute(f"Select Rides, LastRide, LastRechargeID from RidesTable where CardNumber = '{cardNumber}' order by LastRechargeID DESC")
+        self.mycursor.execute(f"Select Rides, LastRide, LastRechargeID from RidesTable where CardNumber = '{cardNumber}' Order By LastRechargeID DESC")
         result = self.mycursor.fetchall()
         if len(result):
             return result
@@ -63,8 +64,18 @@ class DbInitialser:
         else:
             return False
     
-    def updatePayment(self, values):
-        self.mycursor.execute(f"Insert into RechargeTable values ({values})")
+    def updatePayment(self, amount, lastRechargeDate, creditCardNum):
+        self.mycursor.execute(f"Insert into RechargeTable (amount, LastRechargeDate, CreditCardNum) values ('{amount}', '{lastRechargeDate}', '{creditCardNum}')")
+        self.mydb.commit()
+        self.mycursor.execute(f"Select LastRechargeID from RechargeTable where CreditCardNum = '{creditCardNum}' order by LastRechargeID DESC")
+        result = self.mycursor.fetchall()
+        if len(result):
+            return result[0]
+        else:
+            return False
+    
+    def updateRides(self, bus_card_num, rides, lastRechageID, lastRechargeDate):
+        self.mycursor.execute(f"Insert into RidesTable values ('{bus_card_num}', '{rides}', '{lastRechageID}', '{lastRechargeDate}');")
         self.mydb.commit()
         result = self.mycursor.fetchall()
         if len(result):
@@ -72,8 +83,8 @@ class DbInitialser:
         else:
             return False
     
-    def updateRides(self, bus_card_num, rides, lastRechageID):
-        self.mycursor.execute(f"Insert into RidesTable values ('{bus_card_num}, '{rides}', '{lastRechageID}');")
+    def updateRideTaken(self, bus_card_num, rides):
+        self.mycursor.execute(f"Update RidesTable Set Rides = '{rides}' where CardNumber = '{bus_card_num}');")
         self.mydb.commit()
         result = self.mycursor.fetchall()
         if len(result):

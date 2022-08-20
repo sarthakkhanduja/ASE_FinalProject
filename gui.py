@@ -97,14 +97,12 @@ class DashBoard:
         self.newwindow.window.show()
     
     def onSubmitClick(self):
-        lastRechargeID = random.randint(0,100000)
         lastRechargeDate = date.today()
-        self.user.ridesLeft = 0
         rides = int(self.user.ridesLeft) + int(self.newwindow.phNoTextBox.text())
         amount = self.newwindow.amount
         card_num = self.newwindow.creditCardTextBox.text()
-        values = f"'{lastRechargeID}', '{amount}', '{lastRechargeDate}', '{card_num}'"
-        self.db.updatePayment(values)
+        lastRechargeID = self.db.updatePayment(amount, lastRechargeDate, card_num)
+        self.db.updateRides(card_num, rides, lastRechargeID, lastRechargeDate)
         self.user.ridesLeft = str(rides)
         self.user.lastRechargeDate = lastRechargeDate
         self.window.hide()
@@ -116,11 +114,17 @@ class DashBoard:
 
     def onNFCClick(self):
         msg = QMessageBox()
-        msg.setText("Successfully validated")
-        msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+        if int(self.user.ridesLeft) == 0:
+            msg.setText("Please recharge for the ride")
+            msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+            return
+        else:
+            msg.setText("Successfully validated")
+            msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
         retval = msg.exec_()
         self.user.ridesLeft = str(int(self.user.ridesLeft) - 1)
         self.user.lasRideDate = date.today()
+        self.db.updateRideTaken(self.user.cardNumber, self.user.ridesLeft)
         self.loadWindow()
         self.window.update()
         self.window.show()
