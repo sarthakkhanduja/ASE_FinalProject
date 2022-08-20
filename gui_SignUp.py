@@ -2,22 +2,19 @@ from cProfile import label
 from curses import window
 from datetime import date
 import sys
+import random
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QFont
 from database_creation import DbInitialser
+from user import User
 
-class RechargeWindow():
+class SignUp():
     def __init__(self):
         self.Title = "Sign Up"
         # self.cardNo = "4544 5455 7877 8988"
         self.db = DbInitialser()
-        # self.db.open_connection()
-        # self.db.create_database()
-        self.app = QApplication([])
         self.window = QWidget()
         self.SignUp_GUI()
-        self.window.show()
-        self.app.exec_()
     
     def SignUp_GUI(self):
         self.window.setGeometry(200,200,550,550)
@@ -89,7 +86,7 @@ class RechargeWindow():
         button_login = QPushButton("Submit", self.window)
         button_login.setFont(QFont("Roboto", 10))
         button_login.setGeometry(150, 450, 100,50)
-        button_login.clicked.connect(self.onLoginClick)
+        button_login.clicked.connect(self.onSubmitClick)
 
         #Cancel Button
         button_cancel = QPushButton("Cancel", self.window)
@@ -97,18 +94,12 @@ class RechargeWindow():
         button_cancel.setGeometry(310, 450, 100,50)
         button_cancel.clicked.connect(self.onCancelClick)
   
-    def onSignupClick(self):
-        print("test")
     
     def onCancelClick(self):
-        print("Called")
-        self.app.close()
+        self.window.close()
         
-    def onLoginClick(self):
-        card_num = self.cardTextBox.text()
-        pwd = self.passwordTextBox.text()
-        self.db.validateLogin(card_num, pwd)
-        print(F"card num = {card_num}\npwd = {pwd}")
-        
-
-myWindow = RechargeWindow()
+    def onSubmitClick(self):
+        print(f"'{self.fNameTextBox.text()}','{self.lNameTextBox.text()}','{self.cardTextBox.text()}', '{self.phNoTextBox.text()}', '{random.randint(0,10)%2}', '{self.passwordTextBox.text()}'")
+        values = (f"'{self.fNameTextBox.text()}','{self.lNameTextBox.text()}','{self.cardTextBox.text()}', '{self.phNoTextBox.text()}', '{random.randint(0,10)%2}', '{self.passwordTextBox.text()}'")
+        self.db.addUser(values)
+        self.window.close()

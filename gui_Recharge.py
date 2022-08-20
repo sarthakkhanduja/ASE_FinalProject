@@ -2,30 +2,28 @@ from cProfile import label
 from curses import window
 from datetime import date
 import sys
+import random
+from datetime import date
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QFont
 from database_creation import DbInitialser
+from user import User
 
 class RechargeWindow():
-    def __init__(self):
-        self.Title = "Recharge"
-        self.cardNo = "4544 5455 7877 8988"
-        self.student = True
+    def __init__(self, user:User, gui):
+        self.gui = gui
+        self.user = user
         self.db = DbInitialser()
-        # self.db.open_connection()
-        # self.db.create_database()
-        self.app = QApplication([])
+        self.student = self.db.getIsStudent(self.user.cardNumber)
+        self.amount = 0.0
         self.window = QWidget()
+        self.window.setGeometry(200,200,550,550)
+        self.window.setWindowTitle("Recharge")
         self.SignUp_GUI()
-        self.window.show()
-        self.app.exec_()
     
     def SignUp_GUI(self):
-        self.window.setGeometry(200,200,550,550)
-        self.window.setWindowTitle(self.Title)
-
         label_CardNo = QLabel(self.window)
-        label_CardNo.setText("Card Number: " + self.cardNo)
+        label_CardNo.setText("Card Number: " + self.user.cardNumber)
         label_CardNo.setFont(QFont("Roboto", 18))
         #grid.addWidget(label_Name,0,0)
         label_CardNo.move(20,10)
@@ -97,37 +95,27 @@ class RechargeWindow():
         self.phNoTextBox.textChanged.connect(self.calculateFinalAmount)
 
         self.label_Amt = QLabel(self.window)
-        self.label_Amt.setText("Total Amount: " + "0.0")
+        self.label_Amt.setText("Total Amount: " + str(self.amount))
         self.label_Amt.setFont(QFont("Roboto", 13))
         self.label_Amt.move(20,430)
         self.label_Amt.setGeometry(20, 390, 400, 100)
 
 
         #Submit Button
-        button_login = QPushButton("Submit", self.window)
-        button_login.setFont(QFont("Roboto", 10))
-        button_login.setGeometry(150, 500, 100,50)
-        button_login.clicked.connect(self.onLoginClick)
+        self.button_login = QPushButton("Submit", self.window)
+        self.button_login.setFont(QFont("Roboto", 10))
+        self.button_login.setGeometry(150, 500, 100,50)
+        
 
         #Cancel Button
         button_cancel = QPushButton("Cancel", self.window)
         button_cancel.setFont(QFont("Roboto", 10))
         button_cancel.setGeometry(310, 500, 100,50)
         button_cancel.clicked.connect(self.onCancelClick)
-  
-    def onSignupClick(self):
-        print("test")
     
     def onCancelClick(self):
-        print("Called")
-        self.app.close()
-        
-    def onLoginClick(self):
-        card_num = self.cardTextBox.text()
-        pwd = self.passwordTextBox.text()
-        self.db.validateLogin(card_num, pwd)
-        print(F"card num = {card_num}\npwd = {pwd}")
-    
+        self.window.close()
+
     def calculateFinalAmount(self):
         rides = self.phNoTextBox.text()
 
@@ -140,9 +128,6 @@ class RechargeWindow():
             rideRate = 2.15
         else:
             rideRate = 3.15
-        
-        self.label_Amt.setText("Total Amount: " + str(rides_int * rideRate))
-
-        
-
-myWindow = RechargeWindow()
+        self.amount = rides_int * rideRate
+        self.label_Amt.setText("Total Amount: " + str(self.amount))
+    
